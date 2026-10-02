@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Practice Test 27</title>
+<style>
+  :root {
+    --ink: #1b2a41;
+    --ink-soft: #55627a;
+    --line: #d8dde6;
+    --paper: #ffffff;
+    --field: #f3f5f8;
+    --pitch: #2e7d4f;
+    --pitch-deep: #23603c;
+    --correct: #1e8e5a;
+    --wrong: #c43d3d;
+    --correct-bg: #e6f5ec;
+    --wrong-bg: #fbe9e9;
+    --amber: #b8860b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--field); color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; font-size: 17px; line-height: 1.5; }
+
+  header {
+    background: var(--ink); color: #fff; position: sticky; top: 0; z-index: 5;
+  }
+  .bar { max-width: 960px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 20px; }
+  .bar .title { font-weight: 600; }
+  .bar .section-name { color: #c6d0e0; }
+  .bar .spacer { flex: 1; }
+
+  main { max-width: 960px; margin: 28px auto 80px; padding: 0 24px; }
+  .sheet { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 32px 40px; }
+  h1 { font-size: 28px; margin: 0 0 6px; font-weight: 700; }
+  h2 { font-size: 22px; margin: 0 0 16px; font-weight: 700; }
+  p.lead { color: var(--ink-soft); margin: 0 0 20px; }
+
+  .instructions ol { padding-left: 22px; }
+  .instructions li { margin-bottom: 6px; }
+  .plan { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 22px 0 28px; }
+  .plan div { border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
+  .plan strong { display: block; margin-bottom: 4px; }
+  .plan span { color: var(--ink-soft); font-size: 15px; }
+
+  button.primary {
+    background: var(--pitch); color: #fff; border: 0; border-radius: 6px; font-size: 17px; font-weight: 600;
+    padding: 12px 26px; cursor: pointer; font-family: inherit;
+  }
+  button.primary:hover { background: var(--pitch-deep); }
+  button.primary:focus-visible, .option:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+
+  /* passage + questions */
+  .two-col { display: grid; grid-template-columns: 5fr 6fr; gap: 40px; align-items: start; }
+  .passage { position: sticky; top: 76px; }
+  .passage-note { margin: 0 0 14px; font-style: italic; color: var(--ink-soft); }
+
+  .question { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+  .question:last-of-type { border-bottom: 0; }
+  .qhead { display: flex; gap: 12px; align-items: baseline; margin-bottom: 12px; }
+  .qnum { font-weight: 700; min-width: 26px; }
+  .stem { margin: 0; }
+  .stem em.speaker { font-style: normal; font-weight: 600; }
+  .stem .facts { margin: 8px 0 0 0; padding-left: 20px; }
+  .stem .facts li { margin: 2px 0; }
+  .stem .quote { margin: 10px 0 0 0; padding: 10px 14px; background: var(--field); border-left: 3px solid var(--line); border-radius: 0 4px 4px 0; }
+  .options { display: grid; gap: 8px; margin: 14px 0 0 38px; }
+  .option {
+    display: flex; gap: 14px; align-items: flex-start; text-align: left; width: 100%;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px;
+    cursor: pointer; font: inherit; color: inherit;
+  }
+  .option:hover { border-color: var(--ink-soft); }
+  .option .letter { flex: 0 0 28px; height: 28px; border-radius: 50%; border: 2px solid var(--ink);
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+  .option.selected { border-color: var(--ink); background: #eef2f8; }
+  .option.selected .letter { background: var(--ink); color: #fff; }
+
+  .submit-row { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+  .submit-row .status { color: var(--ink-soft); font-size: 15px; }
+
+
+  /* prose passage */
+  .prose { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.6; }
+  .prose h3 { font-family: inherit; font-size: 22px; margin: 0 0 14px; font-weight: 700; }
+  .prose p { margin: 0 0 12px; }
+  .passage { max-height: calc(100vh - 100px); overflow-y: auto; padding-right: 8px; }
+
+
+  /* poem passage */
+  .poem { font-size: 17px; line-height: 1.6; }
+  .poem .stanza { margin: 0 0 18px; position: relative; padding-left: 32px; }
+  .poem .stanza .vn { position: absolute; left: 0; top: 1px; font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 13px; color: var(--ink-soft); }
+  .poem .stanza .line { display: block; }
+
+
+
+  /* letter-only options and shared option lists */
+  .options.letters { grid-template-columns: repeat(5, 54px); gap: 10px; }
+  .options.letters .option { justify-content: center; padding: 9px; }
+  .choice-list { border: 1px solid var(--line); border-radius: 6px; padding: 14px 18px; margin: 0 0 26px; }
+  .choice-list ol { list-style: none; margin: 0; padding: 0; }
+  .choice-list li { display: flex; gap: 12px; margin-bottom: 8px; }
+  .choice-list li:last-child { margin-bottom: 0; }
+  .choice-list .letter { flex: 0 0 26px; height: 26px; border-radius: 50%; border: 2px solid var(--ink);
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+
+
+  /* multi-extract passage */
+  .extract { margin: 0 0 16px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 6px; }
+  .extract h4 { font-family: "Segoe UI", Arial, sans-serif; font-size: 14px; margin: 0 0 6px; letter-spacing: .02em; }
+  .extract p { margin: 0; font-size: 16px; line-height: 1.55; }
+  .options.letters.four { grid-template-columns: repeat(4, 54px); }
+
+  /* cloze gaps */
+  .gap { color: var(--ink-soft); }
+  .gap.filled { color: var(--ink); font-weight: 600; background: #eef2f8; box-shadow: inset 0 -2px 0 var(--pitch); }
+  .gap.filled.correct { color: var(--correct); background: var(--correct-bg); box-shadow: inset 0 -2px 0 var(--correct); }
+
+  /* data tables inside stems */
+  table.grid { border-collapse: collapse; margin: 10px 0 0; font-size: 16px; }
+  table.grid th, table.grid td { border: 1px solid var(--ink); padding: 5px 14px; text-align: left; }
+  table.grid th { background: var(--field); font-weight: 600; }
+
+  /* visual (picture) options */
+  .options.visual { grid-template-columns: repeat(auto-fit, minmax(0, max-content)); gap: 14px; }
+  .options.visual .option { flex-direction: column; align-items: center; gap: 8px; padding: 10px; }
+  .options.visual .option .letter { flex: none; width: 28px; height: 28px; }
+  .options.visual .option svg { display: block; }
+  @media (max-width: 760px) { .options.visual { grid-template-columns: repeat(2, max-content); } }
+
+
+  /* v7 additions */
+  .stem .note { margin: 0 0 8px; font-style: italic; color: var(--ink-soft); font-size: 15px; }
+  .stem ol.statements { margin: 10px 0 0; padding-left: 26px; }
+  .stem ol.statements li { margin: 4px 0; padding-left: 4px; }
+  .figure { margin: 12px 0; }
+  .figure svg { display: block; max-width: 100%; height: auto; }
+  .option svg { display: block; max-width: 100%; height: auto; }
+  .option:has(svg) { align-items: center; }
+  .digit-cards { display: flex; gap: 22px; flex-wrap: wrap; margin: 12px 0 14px; }
+  .digit-card { width: 80px; height: 106px; border: 1.5px solid var(--ink); border-radius: 10px; background: #fdf3e1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .digit-card span { font-size: 56px; font-weight: 700; line-height: 1; }
+  .digit-card small { font-size: 12px; margin-top: 6px; letter-spacing: .03em; }
+  .table-wrap { overflow-x: auto; max-width: 100%; }
+  @media (max-width: 760px) { table.grid th, table.grid td { padding: 4px 8px; font-size: 14px; } }
+  .poem .stanza .line { padding-left: 1.2em; text-indent: -1.2em; }
+  .tags { display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 0 14px; }
+  .tag { border: 1.5px solid var(--ink); border-radius: 8px 22px 22px 8px; padding: 8px 22px 8px 14px; background: #fdf3e1;
+    display: flex; flex-direction: column; min-width: 96px; }
+  .tag small { font-size: 13px; color: var(--ink-soft); }
+  .tag span { font-size: 22px; font-weight: 700; }
+  .hrow { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 22px; margin: 14px 0 16px; }
+  .hnum { display: inline-flex; gap: 3px; }
+  .hnum .dig, .hnum .hid { width: 30px; height: 40px; display: inline-flex; align-items: center; justify-content: center;
+    border: 2px solid var(--ink); border-radius: 5px; font-size: 22px; font-weight: 700; background: #fff; }
+  .hnum .hid { background: var(--ink); color: #fff; font-size: 18px; }
+  .hnum .hid.sq { color: #f2c14e; }
+  .hnum .hid.tri { color: #8fd3c7; }
+  .explain .skill { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: var(--ink-soft); }
+
+  /* review */
+  .result-line { display: flex; gap: 10px; align-items: center; font-weight: 600; margin-bottom: 10px; }
+  .badge { padding: 2px 10px; border-radius: 4px; font-size: 14px; }
+  .badge.ok { background: var(--correct-bg); color: var(--correct); }
+  .badge.no { background: var(--wrong-bg); color: var(--wrong); }
+  .option.is-correct { border-color: var(--correct); background: var(--correct-bg); }
+  .option.is-correct .letter { border-color: var(--correct); background: var(--correct); color: #fff; }
+  .option.is-wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+  .option.is-wrong .letter { border-color: var(--wrong); background: var(--wrong); color: #fff; }
+  .option[disabled] { cursor: default; }
+  .explain { margin: 14px 0 0 38px; padding: 14px 16px; background: var(--field); border-radius: 6px; font-size: 16px; }
+  .explain p { margin: 0 0 8px; }
+  .explain p:last-child { margin: 0; }
+  .explain .why-not { color: var(--ink-soft); }
+
+  .section-score { font-size: 18px; margin: 0 0 24px; }
+  .section-score b { font-size: 26px; }
+
+  /* final */
+  .final-score { text-align: center; padding: 20px 0 10px; }
+  .final-score .big { font-size: 64px; font-weight: 700; line-height: 1; }
+  .final-score .of { color: var(--ink-soft); font-size: 20px; }
+  .breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 26px 0 30px; }
+  .breakdown div { border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
+  .breakdown strong { display: block; font-size: 24px; }
+  .breakdown span { color: var(--ink-soft); font-size: 15px; }
+  .verdict { margin: 0 0 24px; }
+  .center { text-align: center; }
+
+  @media (max-width: 760px) {
+    .two-col { grid-template-columns: 1fr; }
+    .passage { position: static; }
+    .plan, .breakdown { grid-template-columns: 1fr; }
+    .sheet { padding: 22px; }
+    .options, .explain { margin-left: 0; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .option { transition: background .12s, border-color .12s; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <span class="title">Practice Test 27</span>
+    <span class="section-name" id="hdr-section"></span>
+    <span class="spacer"></span>
+  </div>
+</header>
+<main id="app"></main>
+
+<script>
+/* ---------------------------------------------------------------
+   TEST CONTENT — Practice Test 27
+   --------------------------------------------------------------- */
+
+let passMode = "answer";
+const INK = "#1b2a41";
+
+/* ---- Reading: information text ---- */
+const PARAS = [
+  `Ask most Australians what a lyrebird can do, and they will tell you about the chainsaw. Film of a lyrebird reproducing the whine of a saw, along with the click of a camera and the wail of a car alarm, has been watched millions of times. It is a marvellous clip, but it has given many people <b>a rather misleading picture</b>. Those birds lived in wildlife parks, surrounded by human noise. In the forests of south-eastern Australia, a lyrebird’s repertoire is made up mostly of the voices of other animals.`,
+  `And what a repertoire it is. A male superb lyrebird may weave the calls of twenty or more species into a single performance: the cackle of a kookaburra, the whip-crack of a whipbird, the chatter of rosellas. So exact are his copies that even experienced birdwatchers are regularly fooled. His singing reaches its peak in winter, when he stands on a mound of earth he has cleared on the forest floor and throws his extraordinary tail forward over his head like a shimmering veil.`,
+  `Recently, researchers noticed something stranger still. At the very moment a female seems about to leave, some males switch to imitating a whole flock of small birds raising the alarm, as if a predator were close by. Why a male would do this is still being debated. One suggestion is that the commotion makes the female hesitate, giving him a few more seconds to impress her.`,
+  `The chainsaw, in other words, is the least remarkable thing a lyrebird does.`
+];
+const PASSAGE = {
+  title: "The Forest’s Greatest Impersonator",
+  note: "Read the text below, then answer the questions. The numbers show the paragraphs.",
+  html: PARAS.map((p, i) => `<p><b style="font-family:Segoe UI,Arial,sans-serif;font-size:13px;color:#6b7686;margin-right:6px">${i + 1}</b>${p}</p>`).join("")
+};
+
+/* ---- Thinking Skills Q2: symmetry about two lines ---- */
+const SYM_SHADED = [[0,0],[0,5],[5,0],[1,2],[1,3],[2,1],[3,1]];
+const SYM_SVG = (() => {
+  const u = 30, n = 6; let g = "";
+  const set = new Set(SYM_SHADED.map(p => p.join(",")));
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++)
+    g += `<rect x="${c * u}" y="${r * u}" width="${u}" height="${u}" fill="${set.has(r + "," + c) ? INK : "#fff"}" stroke="#9aa5b4" stroke-width="1"/>`;
+  g += `<line x1="${3 * u}" y1="-12" x2="${3 * u}" y2="${n * u + 12}" stroke="#c43d3d" stroke-width="3" stroke-dasharray="7 4"/>
+        <line x1="-12" y1="${3 * u}" x2="${n * u + 12}" y2="${3 * u}" stroke="#c43d3d" stroke-width="3" stroke-dasharray="7 4"/>`;
+  return `<svg viewBox="-16 -16 ${n * u + 32} ${n * u + 32}" width="${n * u + 32}" height="${n * u + 32}" role="img" aria-label="A 6 by 6 grid with two dashed mirror lines, one down the middle and one across the middle. Shaded squares: three of the four corners (top left, top right, bottom left); in row 2, columns 3 and 4; in column 2, rows 3 and 4.">${g}</svg>`;
+})();
+
+/* ---- Thinking Skills Q3: robot on a grid ---- */
+const ROBOT_SVG = (() => {
+  const u = 40, n = 5; let g = "";
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++)
+    g += `<rect x="${c * u}" y="${r * u}" width="${u}" height="${u}" fill="#fff" stroke="#9aa5b4" stroke-width="1"/>`;
+  const label = (r, c, t) => `<text x="${c * u + u / 2}" y="${r * u + u / 2 + 7}" font-size="20" font-weight="700" text-anchor="middle" fill="#4a7fc1">${t}</text>`;
+  g += label(2, 0, "W") + label(2, 2, "X") + label(4, 2, "Y") + label(2, 4, "Z");
+  // start square: bottom-left, robot facing north
+  g += `<rect x="2" y="${4 * u + 2}" width="${u - 4}" height="${u - 4}" fill="#f2d28c"/>
+        <path d="M${u / 2} ${4 * u + 8} L${u / 2 + 9} ${4 * u + 22} L${u / 2 + 3} ${4 * u + 22} L${u / 2 + 3} ${4 * u + 33} L${u / 2 - 3} ${4 * u + 33} L${u / 2 - 3} ${4 * u + 22} L${u / 2 - 9} ${4 * u + 22} Z" fill="${INK}"/>`;
+  g += `<g transform="translate(${n * u + 30} 20)"><line x1="0" y1="34" x2="0" y2="6" stroke="${INK}" stroke-width="2.5"/>
+        <path d="M-6 14 L0 2 L6 14 Z" fill="${INK}"/><text x="0" y="52" font-size="14" font-weight="700" text-anchor="middle" fill="${INK}">N</text></g>`;
+  return `<svg viewBox="-3 -3 ${n * u + 56} ${n * u + 6}" width="${n * u + 56}" height="${n * u + 6}" role="img" aria-label="A 5 by 5 grid. A robot starts in the bottom left square, facing north (up). Four squares are labelled: W in the middle row at the far left, X in the middle row in the centre, Y in the bottom row in the centre, Z in the middle row at the far right.">${g}</svg>`;
+})();
+
+const SECTIONS = [
+  {
+    id: "reading",
+    name: "Reading",
+    passage: PASSAGE,
+    intro: "Read the text, then choose the best answer (A, B, C or D) for each question.",
+    questions: [
+      {
+        stem: "In paragraph 1, the writer says the chainsaw clip has given many people “a rather misleading picture”. What is misleading about it?",
+        options: ["It was filmed in a wildlife park instead of in a real forest.",
+                  "It shows a lyrebird making sounds it could not really make.",
+                  "It suggests lyrebirds copy machines far more than they do.",
+                  "It makes the lyrebird’s famous tail look plainer than it is."],
+        answer: 2,
+        skill: "understanding what a writer implies",
+        explain: `<p>The clip is genuine: the birds really did copy a chainsaw. What misleads people is the <em>impression</em> it leaves. Because it is so famous, people assume copying machines is what lyrebirds typically do. The writer corrects this straight away: in the wild their repertoire is “mostly” the voices of other animals.</p>
+                  <p class="why-not">A is the trap. It is true, and it is the <em>reason</em> those birds copied machines, but being filmed in a wildlife park is a fact about the clip, not the false picture it gives. B is wrong because the clip is real. D is never mentioned in connection with the clip.</p>`
+      },
+      {
+        stem: "Why does the writer describe the males that imitate a flock of alarmed birds (paragraph 3)?",
+        options: ["To warn that male lyrebirds are often in danger as they display.",
+                  "To show that lyrebirds use mimicry in even more surprising ways.",
+                  "To suggest males use the alarm calls to scare away rival males.",
+                  "To show how accurately lyrebirds can copy other birds’ calls."],
+        answer: 1,
+        skill: "working out why a writer includes a detail",
+        explain: `<p>The paragraph opens with “something <em>stranger still</em>”, which tells us this example is even more surprising than what came before. Copying a whole flock in alarm, perhaps to stop a female leaving, shows the mimicry being used cleverly. This builds towards the writer’s point that the chainsaw is “the least remarkable thing a lyrebird does”.</p>
+                  <p class="why-not">D is the trap: the copies <em>are</em> accurate, but accuracy was the point of paragraph 2. Paragraph 3 adds something new, which is <em>how</em> and <em>when</em> the mimicry is used. A takes the alarm calls literally, but there is no real predator. The male only sounds “as if a predator were close by”. C sounds scientific, but the text links the calls to the <em>female</em> leaving, and never mentions rival males.</p>`
+      },
+      {
+        stem: "How does the final sentence connect with the rest of the text?",
+        options: ["It explains why the chainsaw clip became so popular with viewers.",
+                  "It reminds readers what lyrebirds are best known for doing.",
+                  "It introduces a new idea that the writer has not discussed yet.",
+                  "It returns to the opening example to sum up the main point."],
+        answer: 3,
+        skill: "understanding how a text is structured",
+        explain: `<p>The text opens with the chainsaw, the thing everyone knows. It then shows two far more impressive skills: copying twenty or more species exactly, and imitating a whole alarmed flock. The last sentence comes back to the chainsaw, and the words “in other words” signal a summing-up: compared with all of this, the famous trick is the <em>least</em> remarkable.</p>
+                  <p class="why-not">B is the trap. It is true that the chainsaw is what lyrebirds are best known for, but the sentence does more than remind us. It <em>judges</em> the chainsaw against everything else in the text and calls it the “least remarkable”, which is the writer’s whole argument. A is never explained anywhere in the text. C is wrong because the chainsaw was introduced in the very first sentence.</p>`
+      }
+    ]
+  },
+  {
+    id: "thinking",
+    name: "Thinking Skills",
+    intro: "Choose the one correct answer (A, B, C or D).",
+    questions: [
+      {
+        stem: `<div style="border:2px solid #1b2a41;border-radius:6px;padding:10px 14px;margin:0 0 12px">Every student who scored more than 90 in the maths test was given a gold star.</div>
+               <p style="margin:0">If this is true, which one of the following <b>must</b> also be true?</p>`,
+        options: ["Every student with a gold star scored more than 90.",
+                  "A student who scored 80 did not get a gold star.",
+                  "A student with no gold star did not score more than 90.",
+                  "Some students who scored more than 90 had no gold star."],
+        answer: 2,
+        skill: "reasoning from a rule",
+        explain: `<p>The rule says: more than 90 → gold star. So if a student <em>didn’t</em> get a gold star, they can’t have scored more than 90, because if they had, they would have got one. That is C.</p>
+                  <p class="why-not">A turns the rule back to front: gold stars might also have been given for other things, such as a big improvement. B is the trap: the rule only tells us about students who scored <em>more than 90</em>. A student who scored 80 might still have been given a star for some other reason. D goes against the rule.</p>`
+      },
+      {
+        stem: `Some squares on this grid are shaded. Zane wants the pattern to be symmetrical about <b>both</b> dashed mirror lines.
+               <div class="figure">${SYM_SVG}</div>
+               <p style="margin:0">What is the smallest number of extra squares he must shade?</p>`,
+        options: ["3", "4", "5", "6"],
+        answer: 2,
+        skill: "completing a pattern with two lines of symmetry",
+        explain: `<p>With two mirror lines, every shaded square must have partners in all four quarters of the grid: one reflected across, one reflected up or down, and one diagonally opposite.</p>
+                  <p>The corners: three are shaded, so the bottom-right corner is needed (<b>1</b>). The pair in the second row (near the top, either side of the middle line) need a matching pair in the second row from the bottom (<b>2</b>). The pair in the second column (either side of the middle line across) need a matching pair in the second column from the right (<b>2</b>). Total: 1 + 2 + 2 = <b>5</b>.</p>
+                  <p class="why-not">3 (A) is the trap: it only makes the pattern symmetrical about <em>one</em> of the mirror lines. 4 (B) misses the empty corner. 6 (D) adds the two one-line answers together (3 + 3), which counts the corner twice.</p>`
+      },
+      {
+        stem: `A robot starts in the shaded square, facing north. It follows these instructions in order:
+               <ol style="margin:6px 0">
+                 <li>Move forward 3 squares.</li>
+                 <li>Turn right.</li>
+                 <li>Move forward 2 squares.</li>
+                 <li>Turn right.</li>
+                 <li>Move forward 1 square.</li>
+                 <li>Turn left.</li>
+                 <li>Move forward 2 squares.</li>
+               </ol>
+               <div class="figure">${ROBOT_SVG}</div>
+               <p style="margin:0">Which square does the robot finish on?</p>`,
+        options: ["W", "X", "Y", "Z"],
+        answer: 3,
+        skill: "following directions and turns",
+        explain: `<p>Start in the bottom-left square facing north. Move forward 3: up to the second row from the top, still on the left. Turn right, so now facing east, and move 2 squares along that row. Turn right again, so now facing south, and move down 1 square into the middle row. Turn left, so now facing east again, and move 2 squares to the far right. The robot finishes on <b>Z</b>.</p>
+                  <p class="why-not">Y (C) is the trap: it is where the robot ends if it forgets the last “turn left” and keeps going south. W (A) is where it ends if the last turn is to the right instead of the left. X (B) comes from counting the square the robot is standing on as the first square of each move.</p>`
+      }
+    ]
+  },
+  {
+    id: "maths",
+    name: "Mathematical Reasoning",
+    intro: "Choose the one correct answer (A, B, C, D or E). No calculators.",
+    questions: [
+      {
+        stem: `One batch of pancakes needs <b>2 eggs</b>, <b>200 mL of milk</b> and <b>150 g of flour</b>. Oscar has 10 eggs, 1.2 litres of milk and 0.7 kg of flour.
+               <p style="margin:10px 0 0">What is the greatest number of full batches Oscar can make?</p>`,
+        options: ["4", "5", "6", "7", "10"],
+        answer: 0,
+        skill: "finding which amount runs out first",
+        explain: `<p>Check each ingredient. Eggs: 10 ÷ 2 = 5 batches. Milk: 1.2 L = 1200 mL, and 1200 ÷ 200 = 6 batches. Flour: 0.7 kg = 700 g. 4 batches use 600 g, but 5 batches would need 750 g, which is too much. So the flour runs out first: <b>4 batches</b>.</p>
+                  <p class="why-not">5 (B) is the trap: it is enough eggs for 5 batches, but not enough flour. (It is also what you get by rounding 700 ÷ 150 up.) 6 (C) only looks at the milk. 7 (D) divides 700 g by 100 g instead of 150 g. 10 (E) counts eggs, not batches.</p>`
+      },
+      {
+        stem: `Ava, Ben and Cal have 90 stickers altogether.
+               <ul class="facts">
+                 <li>Ava has 6 more stickers than Ben.</li>
+                 <li>Cal has twice as many stickers as Ben.</li>
+               </ul>
+               <p style="margin:10px 0 0">How many stickers does Cal have?</p>`,
+        options: ["21", "27", "30", "42", "45"],
+        answer: 3,
+        skill: "solving a problem with parts that are linked",
+        explain: `<p>Think of Ben’s stickers as one part. Ava has one part plus 6, and Cal has two parts. Altogether that is 4 parts + 6 = 90, so 4 parts = 84 and one part = 21. Ben has 21, Ava has 27, and Cal has 2 × 21 = <b>42</b>.</p>
+                  <p>Check: 21 + 27 + 42 = 90 ✓</p>
+                  <p class="why-not">21 (A) is Ben’s share, and 27 (B) is Ava’s. 30 (C) shares 90 equally between three people. 45 (E) takes half of 90.</p>`
+      },
+      {
+        stem: `A box holds 120 marbles. They are red, blue or green.
+               <ul class="facts">
+                 <li>One third of all the marbles are <b>red</b>.</li>
+                 <li>One quarter of the marbles that are <b>not red</b> are <b>blue</b>.</li>
+                 <li>The rest of the marbles are <b>green</b>.</li>
+               </ul>
+               <p style="margin:10px 0 0">The green marbles are put into bags, with exactly 10 marbles in each bag. How many bags are filled?</p>`,
+        options: ["2", "5", "6", "8", "12"],
+        answer: 2,
+        skill: "fractions of a quantity, step by step",
+        explain: `<p>Red: one third of 120 = 40. That leaves 120 − 40 = 80 marbles that are not red. Blue: one quarter of those 80 = 20. Green: the rest, 80 − 20 = 60. Bags: 60 ÷ 10 = <b>6 bags</b>.</p>
+                  <p class="why-not">5 (B) is the trap: it takes a quarter of <em>all 120</em> marbles for blue (30) instead of a quarter of the 80 that are not red, leaving only 50 green. 8 (D) forgets to take out the blue marbles. 12 (E) bags all 120 marbles. 2 (A) bags the 20 blue marbles instead of the green ones.</p>`
+      }
+    ]
+  }
+];
+
+const LETTERS = ["A", "B", "C", "D", "E"];
+const app = document.getElementById("app");
+const hdrSection = document.getElementById("hdr-section");
+let responses = SECTIONS.map(s => s.questions.map(() => null));
+let current = 0;
+
+function showStart() {
+  hdrSection.textContent = "";
+  app.innerHTML = `
+    <div class="sheet instructions">
+      <h1>Practice paper 27</h1>
+      <p class="lead">Three short sections: reading, thinking skills and maths.</p>
+      <div class="plan">
+        ${SECTIONS.map(s => `<div><strong>${s.name}</strong><span>${s.questions.length} questions</span></div>`).join("")}
+      </div>
+      <ol>
+        <li>Take as long as you need — there is no time limit.</li>
+        <li>Answer all three questions in a section, then press <strong>Submit answers</strong> to see how you went.</li>
+        <li>You don’t lose marks for wrong answers, so attempt every question.</li>
+        <li>Your overall mark out of 9 is shown at the end.</li>
+      </ol>
+      <button class="primary" id="start">Start the reading section</button>
+    </div>`;
+  document.getElementById("start").onclick = () => { current = 0; responses = SECTIONS.map(s => s.questions.map(() => null)); showSection(); };
+}
+
+function renderPassage(pass) {
+  return `<div class="passage">
+    <p class="passage-note">${pass.note}</p>
+    <div class="prose"><h3>${pass.title}</h3><div id="passage-body">${typeof pass.html === "function" ? pass.html() : pass.html}</div></div>
+  </div>`;
+}
+
+function refreshPassage() {
+  const pass = SECTIONS[current].passage;
+  const el = document.getElementById("passage-body");
+  if (el && pass && typeof pass.html === "function") el.innerHTML = pass.html();
+}
+
+function renderQuestions(section, mode) {
+  return section.questions.map((q, qi) => {
+    const chosen = responses[current][qi];
+    const opts = q.options.map((o, oi) => {
+      let cls = "option";
+      if (mode === "answer" && chosen === oi) cls += " selected";
+      if (mode === "review") {
+        if (oi === q.answer) cls += " is-correct";
+        else if (chosen === oi) cls += " is-wrong";
+      }
+      return `<button type="button" class="${cls}" data-q="${qi}" data-o="${oi}" ${mode === "review" ? "disabled" : ""}>
+                <span class="letter">${LETTERS[oi]}</span>${q.letterOptions ? "" : `<span>${o}</span>`}</button>`;
+    }).join("");
+    const optCls = q.visualOptions ? "options visual" : (q.letterOptions ? "options letters" : "options");
+    let result = "";
+    if (mode === "review") {
+      const right = chosen === q.answer;
+      const label = chosen === null ? "Not answered" : (right ? "Correct" : "Incorrect");
+      result = `<div class="result-line"><span class="badge ${right ? "ok" : "no"}">${label}</span>
+                <span>Correct answer: ${LETTERS[q.answer]}${chosen !== null && !right ? ` · You chose ${LETTERS[chosen]}` : ""}</span></div>`;
+    }
+    return `<div class="question">
+      <div class="qhead"><span class="qnum">${qi + 1}</span><div class="stem">${q.stem}</div></div>
+      ${result}
+      <div class="${optCls}">${opts}</div>
+      ${mode === "review" ? `<div class="explain">${q.skill ? `<p class="skill">Skill tested: ${q.skill}</p>` : ""}${q.explain}</div>` : ""}
+    </div>`;
+  }).join("");
+}
+
+function showSection() {
+  passMode = "answer";
+  const s = SECTIONS[current];
+  hdrSection.textContent = `${s.name} · Section ${current + 1} of ${SECTIONS.length}`;
+  const qs = `<div>
+      <h2>${s.name}</h2>
+      <p class="lead">${s.intro}</p>
+      ${s.preamble || ""}
+      ${renderQuestions(s, "answer")}
+      <div class="submit-row">
+        <button class="primary" id="submit">Submit answers</button>
+        <span class="status" id="status"></span>
+      </div>
+    </div>`;
+  app.innerHTML = `<div class="sheet">${s.passage ? `<div class="two-col">${renderPassage(s.passage)}${qs}</div>` : qs}</div>`;
+
+  app.querySelectorAll(".option").forEach(btn => {
+    btn.onclick = () => {
+      const qi = +btn.dataset.q, oi = +btn.dataset.o;
+      responses[current][qi] = oi;
+      app.querySelectorAll(`.option[data-q="${qi}"]`).forEach(b => b.classList.toggle("selected", +b.dataset.o === oi));
+      refreshPassage();
+      updateStatus();
+    };
+  });
+  document.getElementById("submit").onclick = () => {
+    const unanswered = responses[current].filter(r => r === null).length;
+    if (unanswered && !confirm(`You have ${unanswered} unanswered question${unanswered > 1 ? "s" : ""}. Submit anyway?`)) return;
+    showReview();
+  };
+  updateStatus();
+  window.scrollTo(0, 0);
+}
+
+function updateStatus() {
+  const done = responses[current].filter(r => r !== null).length;
+  const el = document.getElementById("status");
+  if (el) el.textContent = `${done} of ${SECTIONS[current].questions.length} answered`;
+}
+
+function sectionScore(i) {
+  return SECTIONS[i].questions.reduce((n, q, qi) => n + (responses[i][qi] === q.answer ? 1 : 0), 0);
+}
+
+function showReview() {
+  passMode = "review";
+  const s = SECTIONS[current];
+  const score = sectionScore(current);
+  const last = current === SECTIONS.length - 1;
+  hdrSection.textContent = `${s.name} · Review`;
+  const body = `<div>
+      <h2>${s.name} — review</h2>
+      <p class="section-score">You scored <b>${score}</b> out of ${s.questions.length}</p>
+      ${s.preamble || ""}
+      ${renderQuestions(s, "review")}
+      <div class="submit-row">
+        <button class="primary" id="next">${last ? "See your overall mark" : `Start the ${SECTIONS[current + 1].name.split(" — ")[0].toLowerCase()} section`}</button>
+      </div>
+    </div>`;
+  app.innerHTML = `<div class="sheet">${s.passage ? `<div class="two-col">${renderPassage(s.passage)}${body}</div>` : body}</div>`;
+  document.getElementById("next").onclick = () => { if (last) showFinal(); else { current++; showSection(); } };
+  window.scrollTo(0, 0);
+}
+
+function showFinal() {
+  hdrSection.textContent = "Results";
+  const total = SECTIONS.reduce((n, _, i) => n + sectionScore(i), 0);
+  const max = SECTIONS.reduce((n, s) => n + s.questions.length, 0);
+  let verdict;
+  if (total === max) verdict = "Full marks. Every question right, across all three sections.";
+  else if (total >= 7) verdict = "A strong result. Look back at the questions you missed — the explanations show exactly where the trap was.";
+  else if (total >= 5) verdict = "A solid attempt. The sections where you dropped marks are the ones to practise next.";
+  else verdict = "A good start. Re-read the explanations for each section, then try the paper again.";
+  app.innerHTML = `
+    <div class="sheet">
+      <div class="final-score"><div class="big">${total}</div><div class="of">out of ${max}</div></div>
+      <div class="breakdown">
+        ${SECTIONS.map((s, i) => `<div><strong>${sectionScore(i)} / ${s.questions.length}</strong><span>${s.name}</span></div>`).join("")}
+      </div>
+      <p class="verdict center">${verdict}</p>
+      <div class="center"><button class="primary" id="again">Try the paper again</button></div>
+    </div>`;
+  document.getElementById("again").onclick = showStart;
+  window.scrollTo(0, 0);
+}
+
+
+showStart();
+</script>
+</body>
+</html>
